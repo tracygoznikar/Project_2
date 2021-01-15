@@ -34,9 +34,9 @@ def dashboard():
     session = Session(engine)
     results = session.query(#sql query).order_by(Measurement.date).all()
     session.close()
-    return jsonify(dict(results))
+    #return jsonify(dict(results))
  #return JSON representation of dictionary
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+#if __name__ == "__main__":
+#    app.run(debug=True)
