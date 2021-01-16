@@ -17,9 +17,37 @@ var myMap = L.map("map", {
   
   // Load in geojson data
   var geoData = "countries.geojson";
-  var pointData = 
+  var pointData = "meteoritesfinal.geojson"
   var geojson;
-  
+
+  // Create function to check if point is inside polygon
+  // Solution from https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
+  function isMarkerInsidePolygon(marker, poly) {
+    var polyPoints = poly.getLatLngs();       
+    var x = marker.getLatLng().lat, y = marker.getLatLng().lng;
+
+    var inside = false;
+    for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+        var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
+        var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+};
+// Tabulate meteorite data for countries
+d3.json(geoData, function(data) {
+  for ( var i=0; i<data.length; i++){
+    if(isMarkerInsidePolygon(pointData, data) = true){
+      data.properties.count += 1;
+      
+    }
+    }
+    }
+);
   // Grab data with d3
   d3.json(geoData, function(data) {
   
@@ -27,7 +55,7 @@ var myMap = L.map("map", {
     geojson = L.choropleth(data, {
   
       // Define what  property in the features to use
-      valueProperty: "MHI2016",
+      valueProperty: "count",
   
       // Set color scale
       scale: ["#ebf0f2", "#04517a"],
