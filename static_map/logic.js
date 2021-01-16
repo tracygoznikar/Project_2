@@ -39,15 +39,7 @@ var myMap = L.map("map", {
     return inside;
 };
 // Tabulate meteorite data for countries
-d3.json(geoData, function(data) {
-  for ( var i=0; i<data.length; i++){
-    if(isMarkerInsidePolygon(pointData, data) = true){
-      data.properties.count += 1;
-      
-    }
-    }
-    }
-);
+
   // Grab data with d3
   d3.json(geoData, function(data) {
   
@@ -74,8 +66,7 @@ d3.json(geoData, function(data) {
   
       // Binding a pop-up to each layer
       onEachFeature: function(feature, layer) {
-        layer.bindPopup("Zip Code: " + feature.properties.ZIP + "<br>Median Household Income:<br>" +
-          "$" + feature.properties.MHI2016);
+        layer.bindPopup(feature.properties.ADMIN);
       }
     }).addTo(myMap);
   
