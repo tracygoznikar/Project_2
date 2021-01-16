@@ -22,7 +22,7 @@ var myMap = L.map("map", {
 
   // Create function to check if point is inside polygon
   // Solution from https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-  function isMarkerInsidePolygon(marker, poly) {
+ /* function isMarkerInsidePolygon(marker, poly) {
     var polyPoints = poly.getLatLngs();       
     var x = marker.getLatLng().lat, y = marker.getLatLng().lng;
 
@@ -37,7 +37,12 @@ var myMap = L.map("map", {
     }
 
     return inside;
-};
+}; */
+d3.json(pointData, function(data) {
+  // Creating a GeoJSON layer with the retrieved data
+   pointMarker = L.marker(data.feature.properties.reclat, data.feature.properties.reclong)
+}).addTo(myMap);
+
 // Tabulate meteorite data for countries
 
   // Grab data with d3
