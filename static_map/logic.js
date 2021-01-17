@@ -47,7 +47,7 @@ var points = turf.featureCollection([pt1, pt2]);
 var polygons = turf.featureCollection([poly1, poly2]);
 
 var tagged = turf.tag(points, polygons, 'pop', 'population');
-/*
+
 // Grab data with d3
 d3.json(geoData, function(data) {
 
@@ -111,4 +111,4 @@ d3.json(geoData, function(data) {
   // Add the layer control to the map
 L.control.layers(baseMaps, overlayMaps).addTo(myMap);
 
-});*/
+});
