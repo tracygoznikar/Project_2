@@ -42,8 +42,9 @@ var pointfeatures =[]
 var pointcollection = []
 var pointlist = []
 var taggedPoints = []
+
 d3.json(geoData, function(data1){
-  for (var i = 0; i < data1.features.length; i++) {
+  for (let i = 0; i < data1.features.length; i++) {
     var polygon = turf.multiPolygon(data1.features[i].geometry["coordinates"], {name:data1.features[i].properties.ADMIN } );
     polylist.push(polygon);
   };
@@ -51,24 +52,32 @@ d3.json(geoData, function(data1){
 
 // Create turf point feature collection
 d3.json(pointData, function(data2){
-  for (var i = 0; i < data2.length; i++) {
+  for (let i = 0; i < data2.length; i++) {
     var point = turf.point([data2[i]['reclong'],data2[i]['reclat']], {id:data2[i].id, name:data2[i].name, mass: data2[i].mass });
     pointlist.push(point);
     
   };
   //console.log(pointlist)
-  console.log(polylist[165])
-  console.log(pointlist[11])
-  console.log([data2[11]['reclong'],data2[11]['reclat']])
+  //console.log(polylist[165])
+  //console.log(pointlist[11].properties)
+  //console.log([data2[11]['reclong'],data2[11]['reclat']])
 
 // Join by location
-  //for (var i= 0; i< polylist.length; i++) {
-    var ptsWithin = turf.pointsWithinPolygon(pointlist, polylist[165])
-    console.log(ptsWithin)
-  //}
+// way. way too slow
+//  for (let i= 0; i< polylist.length; i++) {
+//    for( let j = 0; j<pointlist.length; j++){
+//    var ptsWithin 
+//    var ptTest = turf.booleanPointInPolygon(pointlist[j], polylist[i])
+//    if (ptTest){
+//      pointlist[j].properties.country = polylist[i].name;
+//      ptTest === false 
+//  }
+//}
   // Code scrap. Uneeded. var taggedPoints = turf.tag(pointlist,polylist,'ADMIN','country')
-
-})
+  //}
+  console.log(pointlist)
+//}
+//)
 })
 
 
