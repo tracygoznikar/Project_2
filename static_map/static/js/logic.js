@@ -21,17 +21,50 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 var urlbase = "http://127.0.0.1:5000/";
 var geoData = "static/data/countries.geojson"
 var pointData = urlbase + "/api/v1.0/bubbles";
-var geojson;
-var pointlayer;
-d3.json(geoData, function(data){
-  console.log(data.features[1]["properties"]["ADMIN"])
-})
-
+var chorodata;
+var meteordata;
+// check countries json
+/*d3.json(geoData, function(data){
+  console.log(data.features[1].geometry['coordinates'])
+})*/
+// check meteorites json
 d3.json(pointData, function(data){
   console.log(data[1]["name"])
 })
+
+
 // Tabulate meteorite data for countries
-// Example of join by location (from polygons to point)
+// Create turf poly feature collection
+var polyfeatures =[]
+var polycollection = []
+var polylist = []
+var pointfeatures =[]
+var pointcollection = []
+var pointlist = []
+d3.json(geoData, function(data1){
+  
+  for (var i = 0; i < data1.features.length; i++) {
+    var polygon = turf.multiPolygon(data1.features[i].geometry.coordinates, {name:data1.features[i].properties.ADMIN } );
+    polylist.push(polygon);
+  };
+polycollection = turf.featureCollection(polylist);
+console.log(polycollection)
+
+// Create turf point feature collection
+d3.json(pointData, function(data2){
+  for (var i = 0; i < data2.length; i++) {
+    var point = turf.multiPoint([data2[i].reclong,data2[i].relat], {id:data2[i].id,name:data2[i].name,mass:data2[i].mass } );
+    pointlist.push(point);
+  };
+pointcollection = turf.featureCollection(pointlist);
+console.log(pointcollection)
+
+
+})
+})
+
+
+// Example of join by location (polygons to point) from https://turfjs.org/docs/#tag
 /*var pt1 = turf.point([-77, 44]);
 var pt2 = turf.point([-77, 38]);
 var poly1 = turf.polygon([[
@@ -54,11 +87,12 @@ var polygons = turf.featureCollection([poly1, poly2]);
 
 var tagged = turf.tag(points, polygons, 'pop', 'population');
 */
+// Make Choropleth. Based on 04-Par_MoneyChoropleth
 // Grab data with d3
 d3.json(geoData, function(data) {
 
   // Create a new choropleth layer
-  geojson = L.choropleth(data, {
+  chorodata = L.choropleth(data, {
 
     // Define what  property in the features to use
     valueProperty: "count",
@@ -85,14 +119,14 @@ d3.json(geoData, function(data) {
     
 
   });
-  myMap.addLayer(geojson);
+  myMap.addLayer(chorodata);
 
   // Set up the legend
   var legend = L.control({ position: "bottomright" });
   legend.onAdd = function() {
     var div = L.DomUtil.create("div", "info legend");
-    var limits = geojson.options.limits;
-    var colors = geojson.options.colors;
+    var limits = chorodata.options.limits;
+    var colors = chorodata.options.colors;
     var labels = [];
 
     // Add min & max
