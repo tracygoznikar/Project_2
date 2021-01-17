@@ -25,12 +25,12 @@ var chorodata;
 var meteordata;
 // check countries json
 /*d3.json(geoData, function(data){
-  console.log(data.features[1].geometry['coordinates'])
+  console.log(data.features[1].geometry.coordinates)
 })*/
 // check meteorites json
-d3.json(pointData, function(data){
+/*d3.json(pointData, function(data){
   console.log(data[1]["name"])
-})
+})*/
 
 
 // Tabulate meteorite data for countries
@@ -41,24 +41,32 @@ var polylist = []
 var pointfeatures =[]
 var pointcollection = []
 var pointlist = []
+var taggedPoints = []
 d3.json(geoData, function(data1){
-  
   for (var i = 0; i < data1.features.length; i++) {
-    var polygon = turf.multiPolygon(data1.features[i].geometry.coordinates, {name:data1.features[i].properties.ADMIN } );
+    var polygon = turf.multiPolygon(data1.features[i].geometry["coordinates"], {name:data1.features[i].properties.ADMIN } );
     polylist.push(polygon);
   };
-polycollection = turf.featureCollection(polylist);
-console.log(polycollection)
+
 
 // Create turf point feature collection
 d3.json(pointData, function(data2){
   for (var i = 0; i < data2.length; i++) {
-    var point = turf.multiPoint([data2[i].reclong,data2[i].relat], {id:data2[i].id,name:data2[i].name,mass:data2[i].mass } );
+    var point = turf.point([data2[i]['reclong'],data2[i]['reclat']], {id:data2[i].id, name:data2[i].name, mass: data2[i].mass });
     pointlist.push(point);
+    
   };
-pointcollection = turf.featureCollection(pointlist);
-console.log(pointcollection)
+  //console.log(pointlist)
+  console.log(polylist[165])
+  console.log(pointlist[11])
+  console.log([data2[11]['reclong'],data2[11]['reclat']])
 
+// Join by location
+  //for (var i= 0; i< polylist.length; i++) {
+    var ptsWithin = turf.pointsWithinPolygon(pointlist, polylist[165])
+    console.log(ptsWithin)
+  //}
+  // Code scrap. Uneeded. var taggedPoints = turf.tag(pointlist,polylist,'ADMIN','country')
 
 })
 })
