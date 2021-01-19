@@ -2,41 +2,47 @@ import numpy as np
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, desc
+from flask import Flask, render_template, redirect, url_for
+from flask_pymongo import PyMongo
+
+
+# Import Flask
 from flask import Flask, jsonify
-
-
-#engine = create_engine("sqlite:///Resources/hawaii.sqlite")
-Base = automap_base()
-Base.prepare(engine,reflect=True)
-#Measurement = Base.classes.measurement
-#Station = Base.classes.station
-
+#################################################
+# Database Setup
+#################################################
+# Source:  https://stackoverflow.com/questions/39407254/how-to-set-the-primary-key-when-writing-a-pandas-dataframe-to-a-sqlite-database
+engine = create_engine("sqlite:///../meteorites4.db")
+# reflect an existing database into a new model
+base = automap_base()
+# reflect the tables
+base.prepare(engine, reflect=True)
+print(base.classes.keys())
+# Save references to each table
+meteorites = base.classes.meteorites
+# Create an app
 app = Flask(__name__)
 
-#################################################
-# Flask Routes
-#################################################
+@app.route("/")
+def homepage():
+    return render_template("homepage.html")
 
 @app.route("/")
 def index():
-    return (
-        f"LETS GET OUTTA THIS WORLD<br/>"
-        f"<h3>Available Routes:</h3>"
-        f"<ul><li>/api/v1.0/meteorite_dashboard</li>"
+    print("Server received request from home page...")
+    return ("10 Biggest Meteorites<br/><br/>")
 
-    )
-
-
-@app.route("/api/v1.0/add route")
-def dashboard():
- # convert query results to a dictionary using date as the key and prcp as the value
+@app.route("/api/v1.0/bubbles")
+def bubbles():
+# Create our session (link) from Python to the DB
     session = Session(engine)
-    results = session.query(#sql query).order_by(Measurement.date).all()
+    # Query meteorite size
+    meteorSize = session.query(meteorites.Mass).limit(10).all()
     session.close()
-    #return jsonify(dict(results))
- #return JSON representation of dictionary
-
-
-#if __name__ == "__main__":
-#    app.run(debug=True)
+    meteors = []
+    for Mass in meteorSize:
+        meteors.append(Mass)
+    return jsonify(meteors)
+if __name__=="__main__":
+    app.run(debug=True)
