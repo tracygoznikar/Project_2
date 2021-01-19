@@ -65,18 +65,49 @@ d3.json(pointData, function(data2){
           
  }
 }
+var countArr = []
+for (let i= 0; i< data1.features.length; i++) {
+  countArr.push(data1.features[i].properties.count)
+}
   // Create a new choropleth layer
   // Based on https://leafletjs.com/examples/choropleth/
   // and https://github.com/schnerd/d3-scale-cluster
 
-  
+  //setup choropleth 
+ 
+  function style(feature) {
+    return {
+        fillColor: scale(feature.properties.count),
+        weight: .8,
+        opacity: 1,
+        color: 'white',
+        fillOpacity: 0.7
+
+}
+    };
+
+// Set color scale and breaks using Ckmeans
+  var scale = d3
+  .scaleCluster()
+  .domain(countArr)
+  .range(["#f5fdff", "#c8e2ed","#9ec7df","#78abd2","#598ec4","#4470b4","#3b51a1","#3c3088","#3f006b"]);
+
+  // Add to map
+  chorodata = L.geoJson(data1, {style: style,
+    // Add popup on click
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup( feature.properties.ADMIN + "<br>Meteorite Count: " +
+        feature.properties.count + "<br>Largest Meteorite: " + feature.properties.largeName);
+    }}
+      ).addTo(myMap)
+    
 
   // Set up the legend
   var legend = L.control({ position: "bottomright" });
   legend.onAdd = function() {
     var div = L.DomUtil.create("div", "info legend");
-    var limits = chorodata.options.limits;
-    var colors = chorodata.options.colors;
+    var limits = scale.clusters();
+    var colors = scale.range();
     var labels = [];
 
     // Add min & max
