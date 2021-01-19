@@ -21,42 +21,41 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 var urlbase = "http://127.0.0.1:5000/";
 var geoData = "static/data/countries.geojson"
 var pointData = urlbase + "/api/v1.0/map";
+// initialize variables
 var chorodata;
-var polyfeatures =[]
-var polycollection = []
-var polylist = []
-var pointfeatures =[]
 var pointcollection = []
 var pointlist = []
-var taggedPoints = []
 
+
+// Grab data with d3
 d3.json(geoData, function(data1){
-  for (let i = 0; i < data1.features.length; i++) {
-    var polygon = turf.multiPolygon(data1.features[i].geometry.coordinates, {name:data1.features[i].properties.ADMIN } );
-    polylist.push(polygon);
-    polycollection = turf.featureCollection(polylist)
-  };
   
-// Create turf point feature collection
+// Create turf point feature collection 
 d3.json(pointData, function(data2){
   for (let i = 0; i < data2.length; i++) {
     var point = turf.point([data2[i]['reclong'],data2[i]['reclat']], {id:data2[i].id, name:data2[i].name, mass: data2[i].mass });
     pointlist.push(point);
     pointcollection = turf.featureCollection(pointlist)
   };
-
+// Find landing country for each meteorite
+  // For each country
   for (let i= 0; i< data1.features.length; i++) {
     data1.features[i].properties.count = 0
     data1.features[i].properties.TotMass = 0
     data1.features[i].properties.largeName = ""
     data1.features[i].properties.largeMass = 0
     data1.features[i].properties.largeCoord = []
-        for( let j = 0; j<pointlist.length; j++){
+      // For each meteorite  
+      for( let j = 0; j<pointlist.length; j++){
           var ptTest = turf.booleanPointInPolygon(pointlist[j], data1.features[i])
+          // If meteorite is in country
           if (ptTest){
+            // add meteorite to country's count and mass sum
             data1.features[i].properties.count += 1;
             data1.features[i].properties.TotMass += pointlist[j].properties.mass
+            // if the meteorite is larger the the current largest meteorite in the country
             if(pointlist[j].properties.mass>data1.features[i].properties.largeMass){
+             // replace largest meteorite with new largest
               data1.features[i].properties.largeName = pointlist[j].properties.name
               data1.features[i].properties.largeMass = pointlist[j].properties.mass
               data1.features[i].properties.largeCoord = pointlist[j].geometry.coordinates
@@ -65,16 +64,17 @@ d3.json(pointData, function(data2){
           
  }
 }
+// Create array of meteorite counts to use in creating color scale
 var countArr = []
 for (let i= 0; i< data1.features.length; i++) {
   countArr.push(data1.features[i].properties.count)
 }
+
   // Create a new choropleth layer
   // Based on https://leafletjs.com/examples/choropleth/
   // and https://github.com/schnerd/d3-scale-cluster
 
   //setup choropleth 
- 
   function style(feature) {
     return {
         fillColor: scale(feature.properties.count),
@@ -97,11 +97,10 @@ for (let i= 0; i< data1.features.length; i++) {
     // Add popup on click
     onEachFeature: function(feature, layer) {
       layer.bindPopup( feature.properties.ADMIN + "<br>Meteorite Count: " +
-        feature.properties.count + "<br>Largest Meteorite: " + feature.properties.largeName);
+        feature.properties.count + "<br>Largest Meteorite: " + feature.properties.largeName +
+        "<br> Mass: " + feature.properties.largeMass/1000 + " Kg");
     }}
       ).addTo(myMap)
-    
-
   // Set up the legend
   var legend = L.control({ position: "bottomright" });
   legend.onAdd = function() {
@@ -129,12 +128,7 @@ for (let i= 0; i< data1.features.length; i++) {
 
   // Adding legend to the map
   legend.addTo(myMap);
-  // Add the layer control to the map
-L.control.layers(baseMaps, overlayMaps).addTo(myMap);
-console.log(data1.features[238].properties)
-// testHoba = turf.booleanPointInPolygon(pointlist[0], data1.features[161])
-// console.log(pointlist)
-// var geojson2 = L.geoJSON(pointcollection).addTo(myMap);
+
 })
 });
 
