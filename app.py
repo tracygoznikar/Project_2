@@ -64,26 +64,26 @@ def map():
 
     session.close()
 
-    mtrarray = []
+    mtrarraymap = []
 
     for Mass, name, year,reclat,reclong,GeoLocation,id in results:
-        mtrdict = {}
-        mtrdict["mass"] = Mass
-        mtrdict["name"] = name
-        mtrdict["year"] = year
-        mtrdict["reclat"] = reclat
-        mtrdict["reclong"] = reclong
-        mtrdict["id"] = id
+        mtrdictmap = {}
+        mtrdictmap["mass"] = Mass
+        mtrdictmap["name"] = name
+        mtrdictmap["year"] = year
+        mtrdictmap["reclat"] = reclat
+        mtrdictmap["reclong"] = reclong
+        mtrdictmap["id"] = id
 
 
-        mtrarray.append(mtrdict)
+        mtrarraymap.append(mtrdictmap)
 
-    return jsonify(mtrarray)
+    return jsonify(mtrarraymap)
 
 @app.route("/map")
-def index():
+def mappage():
     print("Server received request from home page...")
-    # return ("10 Biggest Meteorites<br/><br/>")
+    # return ("Biggest Meteorites Around the World<br/><br/>")
     return render_template("map.html")
 
 if __name__ == "__main__":
