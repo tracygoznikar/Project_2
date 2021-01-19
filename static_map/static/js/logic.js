@@ -20,21 +20,8 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 // Load in geojson data
 var urlbase = "http://127.0.0.1:5000/";
 var geoData = "static/data/countries.geojson"
-var pointData = urlbase + "/api/v1.0/bubbles";
+var pointData = urlbase + "/api/v1.0/map";
 var chorodata;
-var meteordata;
-// check countries json
-/*d3.json(geoData, function(data){
-  console.log(data.features[1].geometry.coordinates)
-})*/
-// check meteorites json
-/*d3.json(pointData, function(data){
-  console.log(data[1]["name"])
-})*/
-
-
-// Tabulate meteorite data for countries
-// Create turf poly feature collection
 var polyfeatures =[]
 var polycollection = []
 var polylist = []
@@ -45,98 +32,44 @@ var taggedPoints = []
 
 d3.json(geoData, function(data1){
   for (let i = 0; i < data1.features.length; i++) {
-    var polygon = turf.multiPolygon(data1.features[i].geometry["coordinates"], {name:data1.features[i].properties.ADMIN } );
+    var polygon = turf.multiPolygon(data1.features[i].geometry.coordinates, {name:data1.features[i].properties.ADMIN } );
     polylist.push(polygon);
+    polycollection = turf.featureCollection(polylist)
   };
-
-
+  
 // Create turf point feature collection
 d3.json(pointData, function(data2){
   for (let i = 0; i < data2.length; i++) {
     var point = turf.point([data2[i]['reclong'],data2[i]['reclat']], {id:data2[i].id, name:data2[i].name, mass: data2[i].mass });
     pointlist.push(point);
-    
+    pointcollection = turf.featureCollection(pointlist)
   };
-  //console.log(pointlist)
-  //console.log(polylist[165])
-  //console.log(pointlist[11].properties)
-  //console.log([data2[11]['reclong'],data2[11]['reclat']])
 
-// Join by location
-// way. way too slow
-//  for (let i= 0; i< polylist.length; i++) {
-//    for( let j = 0; j<pointlist.length; j++){
-//    var ptsWithin 
-//    var ptTest = turf.booleanPointInPolygon(pointlist[j], polylist[i])
-//    if (ptTest){
-//      pointlist[j].properties.country = polylist[i].name;
-//      ptTest === false 
-//  }
-//}
-  // Code scrap. Uneeded. var taggedPoints = turf.tag(pointlist,polylist,'ADMIN','country')
-  //}
-  console.log(pointlist)
-//}
-//)
-})
-
-
-// Example of join by location (polygons to point) from https://turfjs.org/docs/#tag
-/*var pt1 = turf.point([-77, 44]);
-var pt2 = turf.point([-77, 38]);
-var poly1 = turf.polygon([[
-  [-81, 41],
-  [-81, 47],
-  [-72, 47],
-  [-72, 41],
-  [-81, 41]
-]], {pop: 3000});
-var poly2 = turf.polygon([[
-  [-81, 35],
-  [-81, 41],
-  [-72, 41],
-  [-72, 35],
-  [-81, 35]
-]], {pop: 1000});
-
-var points = turf.featureCollection([pt1, pt2]);
-var polygons = turf.featureCollection([poly1, poly2]);
-
-var tagged = turf.tag(points, polygons, 'pop', 'population');
-*/
-// Make Choropleth. Based on 04-Par_MoneyChoropleth
-// Grab data with d3
-d3.json(geoData, function(data) {
-
+  for (let i= 0; i< data1.features.length; i++) {
+    data1.features[i].properties.count = 0
+    data1.features[i].properties.TotMass = 0
+    data1.features[i].properties.largeName = ""
+    data1.features[i].properties.largeMass = 0
+    data1.features[i].properties.largeCoord = []
+        for( let j = 0; j<pointlist.length; j++){
+          var ptTest = turf.booleanPointInPolygon(pointlist[j], data1.features[i])
+          if (ptTest){
+            data1.features[i].properties.count += 1;
+            data1.features[i].properties.TotMass += pointlist[j].properties.mass
+            if(pointlist[j].properties.mass>data1.features[i].properties.largeMass){
+              data1.features[i].properties.largeName = pointlist[j].properties.name
+              data1.features[i].properties.largeMass = pointlist[j].properties.mass
+              data1.features[i].properties.largeCoord = pointlist[j].geometry.coordinates
+            }
+          }
+          
+ }
+}
   // Create a new choropleth layer
-  chorodata = L.choropleth(data, {
+  // Based on https://leafletjs.com/examples/choropleth/
+  // and https://github.com/schnerd/d3-scale-cluster
 
-    // Define what  property in the features to use
-    valueProperty: "count",
-
-    // Set color scale
-    scale: ["#ebf0f2", "#04517a"],
-
-    // Number of breaks in step range
-    steps: 7,
-
-    // q for quartile, e for equidistant, k for k-means
-    mode: "q",
-    style: {
-      // Border color
-      color: "#fff",
-      weight: 1,
-      fillOpacity: 0.8
-    },
-
-    // Binding a pop-up to each layer
-    onEachFeature: function(feature, layer) {
-      layer.bindPopup(feature.properties.ADMIN);
-    }
-    
-
-  });
-  myMap.addLayer(chorodata);
+  
 
   // Set up the legend
   var legend = L.control({ position: "bottomright" });
@@ -147,7 +80,7 @@ d3.json(geoData, function(data) {
     var labels = [];
 
     // Add min & max
-    var legendInfo = "<h1>Median Income</h1>" +
+    var legendInfo = "<h1>Meteorite Landings</h1>" +
       "<div class=\"labels\">" +
         "<div class=\"min\">" + limits[0] + "</div>" +
         "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
@@ -167,4 +100,12 @@ d3.json(geoData, function(data) {
   legend.addTo(myMap);
   // Add the layer control to the map
 L.control.layers(baseMaps, overlayMaps).addTo(myMap);
+console.log(data1.features[238].properties)
+// testHoba = turf.booleanPointInPolygon(pointlist[0], data1.features[161])
+// console.log(pointlist)
+// var geojson2 = L.geoJSON(pointcollection).addTo(myMap);
+})
 });
+
+
+

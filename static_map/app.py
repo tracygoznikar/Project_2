@@ -83,6 +83,32 @@ def bubbles():
 
     return jsonify(mtrarray)
 
+@app.route("/api/v1.0/map")
+def map():
+# Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    results = session.query(meteorites.Mass,
+    meteorites.name,meteorites.year,meteorites.reclat,
+    meteorites.reclong,meteorites.GeoLocation, meteorites.id).order_by(meteorites.Mass.desc()).limit(1000)
+
+    session.close()
+
+    mtrarray = []
+
+    for Mass, name, year,reclat,reclong,GeoLocation,id in results:
+        mtrdict = {}
+        mtrdict["mass"] = Mass
+        mtrdict["name"] = name
+        mtrdict["year"] = year
+        mtrdict["reclat"] = reclat
+        mtrdict["reclong"] = reclong
+        mtrdict["id"] = id
+
+
+        mtrarray.append(mtrdict)
+
+    return jsonify(mtrarray)
 
     # mass = []
     # for Mass in mtrmass:
