@@ -3,7 +3,7 @@
 // Creating map object
 var myMap = L.map("map", {
   center: [0, 0],
-  zoom: 3
+  zoom: 2.5
    
 });
 
@@ -42,7 +42,7 @@ d3.json(pointData, function(data2){
   for (let i= 0; i< data1.features.length; i++) {
     data1.features[i].properties.count = 0
     data1.features[i].properties.TotMass = 0
-    data1.features[i].properties.largeName = ""
+    data1.features[i].properties.largeName = "None"
     data1.features[i].properties.largeMass = 0
     data1.features[i].properties.largeCoord = []
       // For each meteorite  
@@ -96,9 +96,9 @@ for (let i= 0; i< data1.features.length; i++) {
   chorodata = L.geoJson(data1, {style: style,
     // Add popup on click
     onEachFeature: function(feature, layer) {
-      layer.bindPopup( feature.properties.ADMIN + "<br>Meteorite Count: " +
-        feature.properties.count + "<br>Largest Meteorite: " + feature.properties.largeName +
-        "<br> Mass: " + feature.properties.largeMass/1000 + " Kg");
+      layer.bindPopup( "<strong><h3>" + feature.properties.ADMIN + "</h3></strong>" + "<b>Meteorite Count: </b>" +
+        feature.properties.count + "<br><b>Largest Meteorite: </b>" + feature.properties.largeName +
+        "<br> <b>Mass: </b>" + feature.properties.largeMass/1000 + " Kg");
     }}
       ).addTo(myMap)
   // Set up the legend
