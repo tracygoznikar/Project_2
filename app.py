@@ -52,8 +52,59 @@ def bubbles():
         mtrdict["id"] = id
         mtrarray.append(mtrdict)
     return jsonify(mtrarray)
+<<<<<<< HEAD
 @app.route("/api/v1.1/demo")
 def demo(): 
     return render_template("demographics.html")
+=======
+
+@app.route("/api/v1.0/map")
+def map():
+# Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    results = session.query(meteorites.Mass,
+    meteorites.name,meteorites.year,meteorites.reclat,
+    meteorites.reclong,meteorites.GeoLocation, meteorites.id).order_by(meteorites.Mass.desc()).limit(1000)
+
+    session.close()
+
+    mtrarraymap = []
+
+    for Mass, name, year,reclat,reclong,GeoLocation,id in results:
+        mtrdictmap = {}
+        mtrdictmap["mass"] = Mass
+        mtrdictmap["name"] = name
+        mtrdictmap["year"] = year
+        mtrdictmap["reclat"] = reclat
+        mtrdictmap["reclong"] = reclong
+        mtrdictmap["id"] = id
+
+
+        mtrarraymap.append(mtrdictmap)
+
+    return jsonify(mtrarraymap)
+
+@app.route("/map")
+def mappage():
+    print("Server received request from home page...")
+    # return ("Biggest Meteorites Around the World<br/><br/>")
+    return render_template("map.html")
+    session = Session(engine)
+    results = session.query(meteorites.Mass, meteorites.name, meteorites.year, meteorites.reclat, meteorites.reclong, meteorites.GeoLocation, meteorites.id).order_by(meteorites.Mass.desc()).all()
+    session.close()
+    mtrarray = []
+    for Mass, name, year, reclat, reclong, GeoLocation, id in results:
+        mtrdict = {}
+        mtrdict["mass"] = Mass
+        mtrdict["name"] = name
+        mtrdict["year"] = year
+        mtrdict["reclat"] = reclat
+        mtrdict["reclong"] = reclong
+        mtrdict["geolocation"] = GeoLocation
+        mtrdict["id"] = id
+        mtrarray.append(mtrdict)
+    return jsonify(mtrarray)
+>>>>>>> 92453c16db2bf255cc4e23c8e868ecafb231ac1e
 if __name__ == "__main__":
     app.run(debug=True)
