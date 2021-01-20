@@ -52,5 +52,8 @@ def bubbles():
         mtrdict["id"] = id
         mtrarray.append(mtrdict)
     return jsonify(mtrarray)
+@app.route("/api/v1.1/demo")
+def demo(): 
+    return render_template("demographics.html")
 if __name__ == "__main__":
     app.run(debug=True)
