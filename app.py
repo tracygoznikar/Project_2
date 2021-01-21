@@ -1,4 +1,4 @@
-import numpy as np
+simport numpy as np
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
@@ -85,6 +85,11 @@ def map():
 
 @app.route("/map")
 def mappage():
+    print("Server received request from home page...")
+    return render_template("map_page.html")
+
+@app.route("/mapbox")
+def mapbox():
     print("Server received request from home page...")
     return render_template("map.html")
 #     session = Session(engine)
