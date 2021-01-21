@@ -1,10 +1,37 @@
 <!DOCTYPE html>
 <html>
+<head>
 <title>Project 2: Meteorite-Landings</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+<link type="text/css" href="/static/skin/pink.flag/css/jplayer.pink.flag.css" rel="stylesheet" />
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.jplayer.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#jquery_jplayer_1").jPlayer({
+      ready: function () {
+        $(this).jPlayer("setMedia", {
+          title: "X-Files",
+          m4a: "/static/music/The X-Files (Synth Whistle Version).mp3",
+          oga: "http://www.jplayer.org/audio/ogg/Miaow-07-Bubble.ogg"
+        }).jPlayer("play");
+      },
+      cssSelectorAncestor: "#jp_container_1",
+      swfPath: "/js",
+      supplied: "m4a, oga",
+      useStateClassSkin: true,
+      autoBlur: false,
+      smoothPlayBar: true,
+      keyEnabled: true,
+      remainingDuration: true,
+      toggleDuration: true
+    });
+  });
+</script>
 <style>
 body, html {
   height: 100%;
@@ -14,7 +41,7 @@ body, html {
 .bgimg {
   background-position: center;
   background-size: cover;
-  background-image: url("homepage_image.jpg");
+  background-image: url("static/images/picture.jpg");
   min-height: 75%;
 }
 
@@ -22,21 +49,24 @@ body, html {
   display: none;
 }
 </style>
+</head>
 <body>
 
 <!-- Links (sit on top) -->
 <div class="w3-top">
   <div class="w3-row w3-padding w3-black">
     <div class="w3-col s3">
-      <a href="#" class="w3-button w3-block w3-black">HOME</a>
+      <a href="http://127.0.0.1:5000/" class="w3-button w3-block w3-black">HOME</a>
     </div>
     <div class="w3-col s3">
-      <a href="#ogData" class="w3-button w3-block w3-black">OG DATA</a>
+      <a href="https://data.nasa.gov/Space-Science/Meteorite-Landings/gh4g-9sfh" class="w3-button w3-block w3-black">OG DATA</a>
     </div>
     <div class="w3-col s3">
-      <a href="#theDash" class="w3-button w3-block w3-black">THE DASH</a>
+      <a href="http://127.0.0.1:5000/api/v1.1/demo" class="w3-button w3-block w3-black">THE DASH</a>
     </div>
-
+    <div class="w3-col s3">
+      <a href="http://127.0.0.1:5000/map" class="w3-button w3-block w3-black">THE MAP</a>
+    </div>
   </div>
 </div>
 
@@ -56,21 +86,17 @@ body, html {
 <!-- Add a background color and large text to the whole page -->
 <div class="w3-sand w3-grayscale w3-large">
 
-<!-- About Container -->
+<!-- About Container
 <div class="w3-container" id="ogData">
   <div class="w3-content" style="max-width:700px">
     <h5 class="w3-center w3-padding-64"><span class="w3-tag w3-wide">ABOUT THE DATA</span></h5>
     <p>Original data from Nasa, heres the link:</p>
     <div class="w3-panel w3-leftbar w3-light-grey">
-      <p><i><a href="url">https://data.nasa.gov/Space-Science/Meteorite-Landings/gh4g-9sfh</a></i></p>
+      <p><i><a href="url">https://data.nasa.gov/Space-Science/Meteorite-Landings/gh4g-9sfh</a></i></p> -->
 
-    </div>
-    <!-- <img src="meteorite.jpg" style="width:100%;max-width:1000px" class="w3-margin-top"> -->
-    <p><strong>We like to rock.</strong></p>
-  </div>
 </div>
 
-<!-- Menu Container -->
+<!-- Menu Container
 <div class="w3-container" id="menu">
   <div class="w3-content" style="max-width:700px">
  
@@ -86,20 +112,57 @@ body, html {
     </div>
 
     <div id="MAPS" class="w3-container menu w3-padding-48 w3-card">
-      <h5>add link to maps?</h5>
-      <p class="w3-text-grey">blah blah blah</p><br>
+      <h5>Click below to see a map of where meteorites have been found</h5>
+      <p<a href="http://127.0.0.1:5000/map" title="Map it out">Click me!</a></p><br>
 
     </div>
 
     <div id="DEMOGRAPHICS" class="w3-container menu w3-padding-48 w3-card">
       <h5>GET A LITTLE METEOR</h5>
-      <p class="w3-text-grey">meteorite "meat"</p><br>
+      <p<a href="http:127.0.0.1:5000//api/v1.1/demo" target="_blank">meat</a></p><br>
     </div>  
   </div>
 </div>
+<br> -->
 
-<!-- Contact/Area Container -->
-
+<!-- jPlayer -->
+<div id="jquery_jplayer_1" class="jp-jplayer"></div>
+<div id="jp_container_1" class="jp-audio" role="application" aria-label="media player">
+  <div class="jp-type-single">
+    <div class="jp-gui jp-interface">
+      <div class="jp-volume-controls">
+        <button class="jp-mute" role="button" tabindex="0">mute</button>
+        <button class="jp-volume-max" role="button" tabindex="0">max volume</button>
+        <div class="jp-volume-bar">
+          <div class="jp-volume-bar-value"></div>
+        </div>
+      </div>
+      <div class="jp-controls-holder">
+        <div class="jp-controls">
+          <button class="jp-play" role="button" tabindex="0">play</button>
+          <button class="jp-stop" role="button" tabindex="0">stop</button>
+        </div>
+        <div class="jp-progress">
+          <div class="jp-seek-bar">
+            <div class="jp-play-bar"></div>
+          </div>
+        </div>
+        <div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
+        <div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
+        <div class="jp-toggles">
+          <button class="jp-repeat" role="button" tabindex="0">repeat</button>
+        </div>
+      </div>
+    </div>
+    <div class="jp-details">
+      <div class="jp-title" aria-label="title">&nbsp;</div>
+    </div>
+    <div class="jp-no-solution">
+      <span>Update Required</span>
+      To play the media you will need to either update your browser to a recent version or update your <a href="https://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+    </div>
+  </div>
+</div>
 
 <!-- End page content -->
 </div>
@@ -126,8 +189,6 @@ function openMenu(evt, menuName) {
 }
 document.getElementById("myLink").click();
 </script>
-<script src="app.py"></script>
-<script src="/js/jquery.jplayer.min.js"></script>
 </body>
 </html>
 <!-- https://www.w3schools.com/w3css/w3css_templates.asp-->

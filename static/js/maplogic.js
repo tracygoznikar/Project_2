@@ -18,9 +18,9 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 }).addTo(myMap);
 
 // Load in geojson data
-var urlbase = "http://127.0.0.1:5000/";
+var urlbase = "/";
 var geoData = "static/data/countries.geojson"
-var pointData = urlbase + "/api/v1.0/map";
+var pointData = urlbase + "api/v1.0/map";
 // initialize variables
 var chorodata;
 var pointcollection = []

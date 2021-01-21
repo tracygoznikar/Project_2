@@ -83,11 +83,11 @@ def map():
 
     return jsonify(mtrarraymap)
 
-# @app.route("/map")
-# def mappage():
-#     print("Server received request from home page...")
-#     # return ("Biggest Meteorites Around the World<br/><br/>")
-#     return render_template("map.html")
+@app.route("/map")
+def mappage():
+    print("Server received request from home page...")
+    # return ("Biggest Meteorites Around the World<br/><br/>")
+    return render_template("map.html")
 #     session = Session(engine)
 #     results = session.query(meteorites.Mass, meteorites.name, meteorites.year, meteorites.reclat, meteorites.reclong, meteorites.GeoLocation, meteorites.id).order_by(meteorites.Mass.desc()).all()
 #     session.close()
