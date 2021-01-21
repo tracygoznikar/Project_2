@@ -86,6 +86,11 @@ def map():
 @app.route("/map")
 def mappage():
     print("Server received request from home page...")
+    return render_template("map_page.html")
+
+@app.route("/mapbox")
+def mapbox():
+    print("Server received request from home page...")
     return render_template("map.html")
 #     session = Session(engine)
 #     results = session.query(meteorites.Mass, meteorites.name, meteorites.year, meteorites.reclat, meteorites.reclong, meteorites.GeoLocation, meteorites.id).order_by(meteorites.Mass.desc()).all()
